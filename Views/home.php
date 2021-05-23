@@ -4,7 +4,6 @@ ini_set('display_errors', 1);
 // 日本時間に設定する
 date_default_timezone_set('Asia/Tokyo');
 // URLディレクトリ設定(相対パスのため省略)
-define('HOME_URL', '');
 
 ///////////////////////////////
 //ツイート一覧
@@ -28,11 +27,61 @@ $view_tweets = [
     'user_image_name' => null,
     'tweet_body' => 'ワーキングスペースをオープンしました',
     'tweet_image_name'=> 'sample-post.jpg',
-    'tweet_created_at' => '2021-03-15 14:00:00',
+    'tweet_created_at' => '2021-05-15 14:00:00',
     'like_id' => 1,
     'like_count' => 1,
-  ]
+  ],
 ];
+
+////////////////////////////////////
+//便利な関数
+//////////////////////////////////
+/**
+ * 画像ファイル名から画像のURLを生成
+ *
+ * @param string $name 画像ファイル名
+ * @param string $type　$type　ユーザー画像かツイート画像
+ * @return void
+ */
+function buildImagePath(string $name=null, string $type)
+{
+  if($type === 'user' && !isset($name)) {
+    return 'img/icon-default-user.svg';
+  }
+
+  return 'img_uploaded/'.$type.'/'.htmlspecialchars($name);
+}
+
+function convertToDayTimeAgo(string $datetime)
+{
+  $unix = strtotime($datetime);
+  $now = time();
+  $diff_sec = $now - $unix;
+
+  if ($diff_sec < 60) {
+    $time = $diff_sec;
+    $unix = '秒前';
+  } elseif ($diff_sec < 3600) {
+    $time = $diff_sec / 60;
+    $unix = '分前';
+  } elseif ($diff_sec < 86400) {
+    $time = $diff_sec / 3600;
+    $unix = '時間前';
+  } elseif ($diff_sec < 2764800) {
+    $time = $diff_sec / 86400;
+    $unix = '日前';
+  } else {
+    if (date('Y') != date('Y', $unix)) {
+      $time = date('Y年n月j日', $unix);
+    } else {
+      $time = date('n月j日', $unix);
+    }
+
+    return $time;
+  }
+
+  return (int)$time . $unix;
+}
 
 ?>
 
@@ -127,33 +176,32 @@ $view_tweets = [
         <div class="tweet">
           <div class="user">
             <a href="profile.php?user_id=1">
-              <img src="img_uploaded\user\sample-person.jpg" alt="">
+              <img src="<?php echo buildImagePath($view_tweet['user_image_name'],'user')?>" alt="">
             </a>
           </div>
           <div class="content">
             <div class="name">
-              <a
-                href="profile.php?user_id=<?php echo $view_tweet['user_id'];?>">
+              <a href="profile.php?user_id=<?php echo htmlspecialchars($view_tweet['user_id']);?>">
                 <span class="nickname">
-                  <?php echo $view_tweet['user_nickname'];?>
+                  <?php echo htmlspecialchars($view_tweet['user_nickname']);?>
                 </span>
                 <span class="user_name">
-                  <?php echo $view_tweet['user_name'];?>・<?php echo $view_tweet['tweet_created_at'];?>
+                  <?php echo htmlspecialchars($view_tweet['user_name']);?>・<?php echo convertToDayTimeAgo($view_tweet['tweet_created_at']);?>
                 </span>
               </a>
             </div>
             <p>
-              <?php echo $view_tweet['tweet_body'];?>
+              <?php echo htmlspecialchars($view_tweet['tweet_body']);?>
             </p>
-            <?php if(isset($view_tweet['user_image_name'])):?>
-              <img src="img_uploaded/tweet/sample-post.jpg" alt="" class="post-image">
+            <?php if(isset($view_tweet['tweet_image_name'])):?>
+              <img src="<?php echo buildImagePath($view_tweet['tweet_image_name'], 'tweet');?>" alt="" class="post-image">
             <?php endif;?>
             <div class="icon-list">
               <div class="like">
                 <?php
               if (isset($view_tweet['like_id'])) {
                 //いいね！している場合
-                echo '<img src="img\icon-heart-twiiterblue.svg" alt="" />';
+                echo '<img src="img\icon-heart-twitterblue.svg" alt="" />';
               } else {
                 echo '<img src="img\icon-heart.svg" alt="" />';
               }
@@ -164,35 +212,12 @@ $view_tweets = [
             </div>
           </div>
         </div>
+      
         <?php endforeach;?>
-
-        <div class="tweet">
-          <div class="user">
-            <a href="profile.php?user_id=1">
-              <img src="img\icon-default-user.svg" alt="">
-            </a>
-          </div>
-          <div class="content">
-            <div class="name">
-              <a href="profile.php?user_id=1">
-                <span class="nickname">次郎</span>
-                <span class="user_name">＠jiro -24日前</span>
-              </a>
-            </div>
-            <p>コワーキングスペースをオープンしました！</p>
-            <img src="img_uploaded\tweet\sample-post.jpg" alt="" class="post-image">
-            <div class="icon-list">
-              <div class="like">
-                <img src="img\icon-heart-twitterblue.svg" alt="" />
-              </div>
-              <div class="like-count">１</div>
-            </div>
-          </div>
-        </div>
+        <?php endif;?>
       </div>
     </div>
 
 
 </body>
-
 </html>
