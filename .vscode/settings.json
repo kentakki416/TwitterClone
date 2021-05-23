@@ -1,0 +1,13 @@
+{
+    "php-cs-fixer.executable": "",
+    "php-cs-fixer.allowRisky":true,
+    "php-cs-fixer.formatHtml": true,
+    "php-cs-fixer.onsave": true,
+    "php-cs-fixer.rules": "@PSR2",
+    "php-cs-fixer.executablePathWindows": "~/.vscode/external/php-cs-fixer-v2.phar",
+    "php-cs-fixer.executablePath": "~/.vscode/external/php-cs-fixer-v2.phar",
+    "php-cs-fixer.exclude": [
+    "!**/node_modules/**"
+    ],
+    "php-cs-fixer.autoFixBySemicolon": true
+}
