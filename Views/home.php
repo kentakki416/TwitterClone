@@ -45,42 +45,42 @@ $view_tweets = [
  */
 function buildImagePath(string $name=null, string $type)
 {
-  if($type === 'user' && !isset($name)) {
-    return 'img/icon-default-user.svg';
-  }
+    if ($type === 'user' && !isset($name)) {
+        return 'img/icon-default-user.svg';
+    }
 
-  return 'img_uploaded/'.$type.'/'.htmlspecialchars($name);
+    return 'img_uploaded/'.$type.'/'.htmlspecialchars($name);
 }
 
 function convertToDayTimeAgo(string $datetime)
 {
-  $unix = strtotime($datetime);
-  $now = time();
-  $diff_sec = $now - $unix;
+    $unix = strtotime($datetime);
+    $now = time();
+    $diff_sec = $now - $unix;
 
-  if ($diff_sec < 60) {
-    $time = $diff_sec;
-    $unix = '秒前';
-  } elseif ($diff_sec < 3600) {
-    $time = $diff_sec / 60;
-    $unix = '分前';
-  } elseif ($diff_sec < 86400) {
-    $time = $diff_sec / 3600;
-    $unix = '時間前';
-  } elseif ($diff_sec < 2764800) {
-    $time = $diff_sec / 86400;
-    $unix = '日前';
-  } else {
-    if (date('Y') != date('Y', $unix)) {
-      $time = date('Y年n月j日', $unix);
+    if ($diff_sec < 60) {
+        $time = $diff_sec;
+        $unix = '秒前';
+    } elseif ($diff_sec < 3600) {
+        $time = $diff_sec / 60;
+        $unix = '分前';
+    } elseif ($diff_sec < 86400) {
+        $time = $diff_sec / 3600;
+        $unix = '時間前';
+    } elseif ($diff_sec < 2764800) {
+        $time = $diff_sec / 86400;
+        $unix = '日前';
     } else {
-      $time = date('n月j日', $unix);
+        if (date('Y') != date('Y', $unix)) {
+            $time = date('Y年n月j日', $unix);
+        } else {
+            $time = date('n月j日', $unix);
+        }
+
+        return $time;
     }
 
-    return $time;
-  }
-
-  return (int)$time . $unix;
+    return (int)$time . $unix;
 }
 
 ?>
@@ -96,10 +96,18 @@ function convertToDayTimeAgo(string $datetime)
   <link rel="icon" href="img\logo-twitterblue.svg" />
   <!-- Bootstrap CSS-->
   <!-- CSS only -->
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous" />
   <link rel="stylesheet" href="css/style.css" />
+  <!-- JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous" defer></script>
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous" defer>
+  </script>
+  <!-- いいね！JS-->
+  <script src="js/like.js" defer></script>
   <title>ホーム画面　/ Twitterクローン</title>
 </head>
 
@@ -139,7 +147,10 @@ function convertToDayTimeAgo(string $datetime)
             </a>
           </li>
           <li class="navitem my-icon">
-            <img src="img_uploaded\user\sample-person.jpg" alt="" />
+            <img src="img_uploaded\user\sample-person.jpg" alt="" class="js-popover" data-bs-container="body"
+              data-bs-toggle="popover" data-bs-placement="right"
+              data-bs-content="<a href='profile.php'>プロフィール</a><br><a href='sign-out.php'>ログアウト</a>"
+              data-bs-html="true" />
           </li>
         </ul>
       </div>
@@ -165,23 +176,26 @@ function convertToDayTimeAgo(string $datetime)
           </form>
         </div>
       </div>
-  
+
       <div class="ditch"></div>
-      <?php if(empty($view_tweets)):?>
+      <?php if (empty($view_tweets)):?>
       <p class="p-3">ツイートがまだありません</p>
       <?php else:?>
       <!-- 投稿一覧 -->
       <div class="tweet-list">
-        <?php foreach($view_tweets as $view_tweet):?>
+        <?php foreach ($view_tweets as $view_tweet):?>
         <div class="tweet">
           <div class="user">
             <a href="profile.php?user_id=1">
-              <img src="<?php echo buildImagePath($view_tweet['user_image_name'],'user')?>" alt="">
+              <img
+                src="<?php echo buildImagePath($view_tweet['user_image_name'], 'user')?>"
+                alt="">
             </a>
           </div>
           <div class="content">
             <div class="name">
-              <a href="profile.php?user_id=<?php echo htmlspecialchars($view_tweet['user_id']);?>">
+              <a
+                href="profile.php?user_id=<?php echo htmlspecialchars($view_tweet['user_id']);?>">
                 <span class="nickname">
                   <?php echo htmlspecialchars($view_tweet['user_nickname']);?>
                 </span>
@@ -193,31 +207,43 @@ function convertToDayTimeAgo(string $datetime)
             <p>
               <?php echo htmlspecialchars($view_tweet['tweet_body']);?>
             </p>
-            <?php if(isset($view_tweet['tweet_image_name'])):?>
-              <img src="<?php echo buildImagePath($view_tweet['tweet_image_name'], 'tweet');?>" alt="" class="post-image">
+            <?php if (isset($view_tweet['tweet_image_name'])):?>
+            <img
+              src="<?php echo buildImagePath($view_tweet['tweet_image_name'], 'tweet');?>"
+              alt="" class="post-image">
             <?php endif;?>
             <div class="icon-list">
-              <div class="like">
+              <div class="like js-like"
+                data-like-id="<?php echo $view_tweet['like_id'];?>">
                 <?php
               if (isset($view_tweet['like_id'])) {
-                //いいね！している場合
-                echo '<img src="img\icon-heart-twitterblue.svg" alt="" />';
+                  //いいね！している場合
+                  echo '<img src="img\icon-heart-twitterblue.svg" alt="" />';
               } else {
-                echo '<img src="img\icon-heart.svg" alt="" />';
+                  echo '<img src="img\icon-heart.svg" alt="" />';
               }
               ?>
 
               </div>
-              <div class="like-count"><?php echo $view_tweet['like_count'];?></div>
+              <div class="like-count js-like-count"><?php echo $view_tweet['like_count'];?>
+              </div>
             </div>
           </div>
         </div>
-      
+
         <?php endforeach;?>
         <?php endif;?>
       </div>
     </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        $('.js-popover').popover({
+          container: 'body'
+        })
+      }, false);
+    </script>
 
 
 </body>
+
 </html>
