@@ -1,74 +1,36 @@
+<?php
+// 設定関連を読み込み
+include_once('../config.php');
+// 便利な関数を読み込む
+include_once('../util.php');
+
+$view_tweets = [
+    [
+      'user_id' => 1,
+      'user_name' => 'taro',
+      'user_nickname' => '太郎',
+      'user_image_name' => 'sample-person.jpg',
+      'tweet_body' => '今プログラミングしています',
+      'tweet_image_name'=>null,
+      'tweet_created_at' => '2021-03-15 14:00:00',
+      'like_id' => null,
+      'like_count' => 0,
+    ]
+  ];
+?>
 <!DOCTYPE html>
 <html lang="ja">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="プロフィール画面" />
-    <link rel="icon" href="img\logo-twitterblue.svg" />
-    <!-- Bootstrap CSS-->
-    <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous" />
-    <link rel="stylesheet" href="css/style.css" />
-    <!-- JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.js"
-        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous" defer></script>
-    <!-- JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"
-        defer>
-    </script>
-    <!-- いいね！JS-->
-    <script src="js/like.js" defer></script>
+<head>   
+    <?php include_once('../Views/common/head.php');?>
     <title>プロフィール画面　/ Twitterクローン</title>
+    <meta name="description" content="プロフィール画面" />
 </head>
 
 <body class="home profile text-center">
     <div class="container">
-        <div class="side">
-            <div class="side-inner">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a href="home.php" class="nav-link">
-                            <img src="img\logo-twitterblue.svg" alt="" class="icon" />
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="home.php" class="nav-link">
-                            <img src="img\icon-home.svg" alt="" />
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="search.php" class="nav-link">
-                            <img src="img\icon-search.svg" alt="" />
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="notification.php" class="nav-link">
-                            <img src="img\icon-notification.svg" alt="" />
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="profile.php" class="nav-link">
-                            <img src="img\icon-profile.svg" alt="" />
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="post.php" class="nav-link">
-                            <img src="img\icon-post-tweet-twitterblue.svg" alt="" class="post-tweet" />
-                        </a>
-                    </li>
-                    <li class="navitem my-icon">
-                        <img src="img_uploaded\user\sample-person.jpg" alt="" class="js-popover"
-                            data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right"
-                            data-bs-content="<a href='profile.php'>プロフィール</a><br><a href='sign-out.php'>ログアウト</a>"
-                            data-bs-html="true" />
-                    </li>
-                </ul>
-            </div>
-        </div>
+    <!-- サイドメニューの読み込み -->
+    <?php include_once('../Views/common/side.php');?>
         <!-- 投稿画面 -->
         <div class="main">
             <div class="main-header">
@@ -143,19 +105,23 @@
             </div>
 
             <div class="ditch"></div>
-            <!-- TODO:後日実装（ツイート一覧） -->
+            
+            <?php if (empty($view_tweets)):?>
+        <p class="p-3">ツイートがまだありません</p>
+        <?php else:?>
+        <!-- 投稿一覧 -->
+        <div class="tweet-list">
+        <?php foreach ($view_tweets as $view_tweet):?>
+        <?php include('../Views/common/tweet.php');?>
+
+        <?php endforeach;?>
+        <?php endif;?>
         </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            $('.js-popover').popover({
-                //ポップオーバーを追加する要素を指定します。通常は必要ないが、インプットグループ
-                // やボタングループ等の中でポップオーバーを使用する際に、親要素のスタイルがポップオーバーに影響を
-                // 与える場合にcontainerに'body'を指定することでその問題を回避できる
-                container: 'body'
-            })
-        }, false);
-    </script>
+        <!-- footerのJSの読み込み -->
+<?php include_once('../Views/common/foot.php');?>
+
+
 
 
 </body>
