@@ -334,6 +334,9 @@ body.signup {
 /*
 通知
 ****/
+.notification .notification-list .no-result {
+  padding: 20px;
+}
 .notification .notification-list .notification-item {
   padding: 10px;
   border-bottom: 1px solid rgb(235, 238, 240);
