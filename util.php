@@ -48,3 +48,50 @@ function convertToDayTimeAgo(string $datetime)
 
     return (int)$time . $unix;
 }
+
+function saveUserSession(array $user)
+{
+    //セッションを開始していない場合
+    if(session_start() === PHP_SESSION_NONE) {
+        // セッション開始（session_start()の前に処理を記述するとエラーになるので注意）
+        session_start();
+    }
+
+    $_SESSION['USER'] = $user;
+}
+
+function deleteUserSession() {
+      //セッションを開始していない場合
+    if(session_start() === PHP_SESSION_NONE) {
+        // セッション開始（session_start()の前に処理を記述するとエラーになるので注意）
+        session_start();
+    }
+    
+    // セッションのユーザー情報を削除
+    unset($_SESSION['USER']);
+}
+
+function getUserSession() {
+    if(session_start() === PHP_SESSION_NONE) {
+        // セッション開始（session_start()の前に処理を記述するとエラーになるので注意）
+        session_start();
+    }
+
+    if(!isset($_SESSION['USER'])) {
+        // セッションにユーザー情報がない
+        return false;
+
+    
+    }   
+
+    $user = $_SESSION['USER'];
+
+    // 画像のファイル名からファイルのURLを取得
+    if(!isset($user['image_name'])) {
+        $user['image_name'] = null;
+    }
+    $user['image_path'] = buildImagePath($user['image_name'], 'user');
+
+    return $user;
+        
+    }

@@ -32,7 +32,7 @@
             </a>
           </li>
           <li class="navitem my-icon">
-            <img src="img_uploaded\user\sample-person.jpg" alt="" class="js-popover" data-bs-container="body"
+            <img src="<?php echo htmlspecialchars($view_user['image_path'])?>" alt="" class="js-popover" data-bs-container="body"
               data-bs-toggle="popover" data-bs-placement="right"
               data-bs-content="<a href='profile.php'>プロフィール</a><br><a href='sign-out.php'>ログアウト</a>"
               data-bs-html="true" />

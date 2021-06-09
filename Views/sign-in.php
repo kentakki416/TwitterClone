@@ -1,9 +1,3 @@
-<?php
-// 設定関連を読み込み
-include_once('../config.php');
-// 便利な関数を読み込む
-include_once('../util.php');
-?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -29,6 +23,12 @@ include_once('../util.php');
         <form action="sign-in.php" method="post">
             <img src="img/logo-white.svg" alt="" class="logo-white">
             <h1>Twiiterクローンにログイン</h1>
+            <?php if(isset($view_try_login_result) && $view_try_login_result === false):?>
+            <!-- ログイン失敗した場合 -->
+                <div class="alert alert-warning test-sm" role="alert">
+                ログインに失敗しました。メールアドレス、パスワードが正しいかご確認ください
+                </div> 
+            <?php endif;?>
             <input type="text" class="form-control" name="email" placeholder="メールアドレス"  required autofocus>
             <input type="text" class="form-control" name="password" placeholder="パスワード"  required>
             <button class="w-100 btn btn-lg">ログイン</button>
