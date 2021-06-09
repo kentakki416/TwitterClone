@@ -95,3 +95,31 @@ function getUserSession() {
     return $user;
         
     }
+
+    function uploadImage(array $user, array $file, string $type) {
+
+        // 画像のファイル名から拡張子を取得
+        $image_extention = strrchr($file['name'], '.');
+
+        // 画像のファイル名を生成
+        $image_name = $user['id'].'_'.date('YmdHis').$image_extention;
+
+        // 保存先のディレクトリ
+        $directory = './img_uploaded/'.$type.'/';
+
+        // 画像のパス
+        $image_path = $directory.$image_name;
+
+        // 画像を設置
+        move_uploaded_file($file['tmp_name'], $image_path);
+
+        // 画像ファイルかチェック
+        if(exif_imagetype($image_path)) {
+            return $image_name;
+        }
+
+        // 画像ファイル以外の場合
+        echo '選択されたファイルが画像ではないため処理を停止しました';
+        exit;
+
+    }

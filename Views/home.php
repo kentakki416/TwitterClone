@@ -45,6 +45,7 @@
 
         <?php endforeach;?>
         <?php endif;?>
+
       </div>
     </div>
     <!-- footerのJSの読み込み -->
