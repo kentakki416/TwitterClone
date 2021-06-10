@@ -19,7 +19,7 @@
       </div>
       <div class="tweet-post">
         <div class="my-icon">
-          <img src="img_uploaded\user\sample-person.jpg" alt="" />
+          <img src="<?php echo htmlspecialchars($view_user['image_path']);?>" alt="" />
         </div>
         <div class="input-area">
           <form action="post.php" method="post" enctype="mulitipart/form-data">
