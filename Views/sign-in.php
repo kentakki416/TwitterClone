@@ -22,7 +22,7 @@
     <main class="form-signup">
         <form action="sign-in.php" method="post">
             <img src="img/logo-white.svg" alt="" class="logo-white">
-            <h1>Twiiterクローンにログイン</h1>
+            <h1>Twitterクローンにログイン</h1>
             <?php if(isset($view_try_login_result) && $view_try_login_result === false):?>
             <!-- ログイン失敗した場合 -->
                 <div class="alert alert-warning test-sm" role="alert">
