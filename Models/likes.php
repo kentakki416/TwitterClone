@@ -31,7 +31,7 @@ function createLike(array $data)
     } else {
         // 結果を失敗で返却
         $response = false;
-        echo 'エラーメッセージ：'.$mysqli->error, "\n";
+        echo 'エラーメッセージ：'.$mysqli->error. "\n";
     }
 
     $statement->close();

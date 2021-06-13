@@ -41,7 +41,7 @@ function createTweet(array $data) {
  * @param array $user ログインしているユーザー情報
  * @return void array|false
  */
-function findTweets(array $user) {
+function findTweets(array $user, string $keyword = null) {
     $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
     // 接続チェック
     if($mysqli->connect_errno) {
@@ -76,6 +76,19 @@ function findTweets(array $user) {
         T.status = 'active'
     SQL;
 
+    // 検索キーワードが設定された場合
+    if(isset($keyword)) {
+        // エスケープ
+        $keyword = $mysqli->real_escape_string($keyword);
+        // ツイート主のニックネーム・ユーザー名・本名から部分一致検索
+        $query .= 'AND CONCAT(U.nickname, U.name, T.body) LIKE "%'.$keyword.'%"';
+    }
+
+    // 新しい順に並び替え
+    $query .= 'ORDER BY T.created_at DESC';
+    // ５０件表示
+    $query .= ' LIMIT 50';
+
     // SQLを実行
     if($result = $mysqli->query($query)) {
         // データを配列で受け取る
@@ -86,6 +99,7 @@ function findTweets(array $user) {
     }
 
     $mysqli->close();
+    
     return $response;
 
 

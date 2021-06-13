@@ -23,10 +23,9 @@ $like_id = null;
 if(isset($_POST['tweet_id'])) {
     $data = [
         'tweet_id' =>$_POST['tweet_id'],
-        'user_id' => $_POST['id'],
+        'user_id' => $user['id'],
     ];
     // いいね！登録
-    // TODO：後で作成
     $like_id = createLike($data);
 }
 
@@ -46,5 +45,6 @@ $response = [
     // いいね！した時に値が入る
     'like_id'=> $like_id,
 ];
+// ブラウザにレスポンスがJSON形式であることを伝える
 header('Content-Type:application/json; charset="utf-8');
 echo json_encode($response);
