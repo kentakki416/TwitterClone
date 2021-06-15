@@ -13,7 +13,7 @@
                   <?php echo htmlspecialchars($view_tweet['user_nickname']);?>
                 </span>
                 <span class="user_name">
-                  <?php echo htmlspecialchars($view_tweet['user_name']);?>・<?php echo convertToDayTimeAgo($view_tweet['tweet_created_at']);?>
+                  @<?php echo htmlspecialchars($view_tweet['user_name']);?>・<?php echo convertToDayTimeAgo($view_tweet['tweet_created_at']);?>
                 </span>
               </a>
             </div>

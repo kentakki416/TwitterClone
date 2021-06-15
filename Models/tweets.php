@@ -10,11 +10,6 @@ function createTweet(array $data) {
         echo 'MySQLの接続に失敗しました。:'.$mysqli->connect_error."\n";
         exit;
     }
-    {
-        {
-            
-        }
-    }
     
     // 新規登録のSQL
     $query = 'INSERT INTO tweets (user_id, body, image_name) VALUES (?, ?, ?)';
@@ -35,13 +30,14 @@ function createTweet(array $data) {
 
     return $response;
 }
+
 /**
  * ツイート一覧を取得
  *
  * @param array $user ログインしているユーザー情報
  * @return void array|false
  */
-function findTweets(array $user, string $keyword = null) {
+function findTweets(array $user, string $keyword = null, array $user_ids = null) {
     $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
     // 接続チェック
     if($mysqli->connect_errno) {
@@ -84,8 +80,18 @@ function findTweets(array $user, string $keyword = null) {
         $query .= 'AND CONCAT(U.nickname, U.name, T.body) LIKE "%'.$keyword.'%"';
     }
 
+    // ユーザーIDが指定されている場合
+    if (isset($user_ids)) {
+        foreach ($user_ids as $key=> $user_id) {
+            $user_ids[$key] = $mysqli->real_escape_string($user_id);
+        }
+        $user_ids_csv = '"'.join('","', $user_ids).'"';
+        // ユーザーID一覧に含まれるユーザーツイートの検索
+        $query .= ' AND T.user_id IN (' .$user_ids_csv. ')';
+    }
+
     // 新しい順に並び替え
-    $query .= 'ORDER BY T.created_at DESC';
+    $query .= ' ORDER BY T.created_at DESC';
     // ５０件表示
     $query .= ' LIMIT 50';
 

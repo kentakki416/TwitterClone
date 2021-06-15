@@ -22,8 +22,6 @@ if (!$user) {
 
 // 画面表示
 $view_user = $user;
-
-
 //ツイート一覧
 
 $view_tweets = findTweets($user);

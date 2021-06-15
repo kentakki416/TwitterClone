@@ -16,3 +16,5 @@
 </script>
 <!-- いいね！JS-->
 <script src="js/like.js" defer></script>
+<!-- フォロー -->
+<script src="js/follow.js" defer></script>

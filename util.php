@@ -9,7 +9,7 @@
  * @param string $type　$type　ユーザー画像かツイート画像
  * @return void
  */
-function buildImagePath(string $name=null, string $type)
+function buildImagePath(string $name = null, string $type)
 {
     if ($type === 'user' && !isset($name)) {
         return 'img/icon-default-user.svg';
