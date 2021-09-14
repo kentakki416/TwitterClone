@@ -26,16 +26,16 @@ function convertToDayTimeAgo(string $datetime)
 
     if ($diff_sec < 60) {
         $time = $diff_sec;
-        $unix = '秒前';
+        $unit = '秒前';
     } elseif ($diff_sec < 3600) {
         $time = $diff_sec / 60;
-        $unix = '分前';
+        $unit = '分前';
     } elseif ($diff_sec < 86400) {
         $time = $diff_sec / 3600;
-        $unix = '時間前';
+        $unit = '時間前';
     } elseif ($diff_sec < 2764800) {
         $time = $diff_sec / 86400;
-        $unix = '日前';
+        $unit = '日前';
     } else {
         if (date('Y') != date('Y', $unix)) {
             $time = date('Y年n月j日', $unix);
@@ -46,13 +46,13 @@ function convertToDayTimeAgo(string $datetime)
         return $time;
     }
 
-    return (int)$time . $unix;
+    return (int)$time . $unit;
 }
 
 function saveUserSession(array $user)
 {
     //セッションを開始していない場合
-    if(session_start() === PHP_SESSION_NONE) {
+    if (session_status() === PHP_SESSION_NONE) {
         // セッション開始（session_start()の前に処理を記述するとエラーになるので注意）
         session_start();
     }
@@ -60,9 +60,10 @@ function saveUserSession(array $user)
     $_SESSION['USER'] = $user;
 }
 
-function deleteUserSession() {
+function deleteUserSession()
+{
       //セッションを開始していない場合
-    if(session_start() === PHP_SESSION_NONE) {
+    if (session_status() === PHP_SESSION_NONE) {
         // セッション開始（session_start()の前に処理を記述するとエラーになるので注意）
         session_start();
     }
@@ -71,13 +72,14 @@ function deleteUserSession() {
     unset($_SESSION['USER']);
 }
 
-function getUserSession() {
-    if(session_start() === PHP_SESSION_NONE) {
+function getUserSession() 
+{
+    if (session_status() === PHP_SESSION_NONE) {
         // セッション開始（session_start()の前に処理を記述するとエラーになるので注意）
         session_start();
     }
 
-    if(!isset($_SESSION['USER'])) {
+    if (!isset($_SESSION['USER'])) {
         // セッションにユーザー情報がない
         return false;
 
@@ -87,7 +89,7 @@ function getUserSession() {
     $user = $_SESSION['USER'];
 
     // 画像のファイル名からファイルのURLを取得
-    if(!isset($user['image_name'])) {
+    if (!isset($user['image_name'])) {
         $user['image_name'] = null;
     }
     $user['image_path'] = buildImagePath($user['image_name'], 'user');
@@ -96,7 +98,8 @@ function getUserSession() {
         
     }
 
-    function uploadImage(array $user, array $file, string $type) {
+    function uploadImage(array $user, array $file, string $type) 
+    {
 
         // 画像のファイル名から拡張子を取得
         $image_extention = strrchr($file['name'], '.');
@@ -114,7 +117,7 @@ function getUserSession() {
         move_uploaded_file($file['tmp_name'], $image_path);
 
         // 画像ファイルかチェック
-        if(exif_imagetype($image_path)) {
+        if (exif_imagetype($image_path)) {
             return $image_name;
         }
 

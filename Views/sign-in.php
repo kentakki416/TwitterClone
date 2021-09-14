@@ -25,13 +25,13 @@
             <h1>Twitterクローンにログイン</h1>
             <?php if(isset($view_try_login_result) && $view_try_login_result === false):?>
             <!-- ログイン失敗した場合 -->
-                <div class="alert alert-warning test-sm" role="alert">
+                <div class="alert alert-warning text-sm" role="alert">
                 ログインに失敗しました。メールアドレス、パスワードが正しいかご確認ください
                 </div> 
             <?php endif;?>
-            <input type="text" class="form-control" name="email" placeholder="メールアドレス"  required autofocus>
-            <input type="text" class="form-control" name="password" placeholder="パスワード"  required>
-            <button class="w-100 btn btn-lg">ログイン</button>
+            <input type="email" class="form-control" name="email" placeholder="メールアドレス"  required autofocus>
+            <input type="password" class="form-control" name="password" placeholder="パスワード"  required>
+            <button class="w-100 btn btn-lg" type="submit">ログイン</button>
             <p class="mt-3 mb-2"><a href="sign-up.php">会員登録する</a></p>
             <p class="mt-2 mb-3 text-muted">&copy; 2021</p>
         </form>

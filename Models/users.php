@@ -3,7 +3,8 @@
 ////ユーザーデータを処理
 /////////////////////////////////////
 
-function createUser(array $data) {
+function createUser(array $data)
+{
     $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
     // 接続チェック
     if ($mysqli->connect_errno) {
@@ -35,6 +36,48 @@ function createUser(array $data) {
     return $response;
 }
 
+function updateUser(array $data) 
+{
+    $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+    // 接続チェック
+    if($mysqli->connect_errno) {
+        echo 'MySQLの接続に失敗しました。:'.$mysqli->connect_error."\n";
+        exit;
+    }
+
+    $data['updated_at'] = date('Y-m-d H:i:s');
+
+    if(isset($data['password'])) {
+        // パスワードをハッシュ化
+        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+    }
+
+    // 更新のSQLを作成
+    // SET句のカラムを準備
+    $set_columns = [];
+    foreach ([
+        'name', 'nickname', 'email', 'password', 'image_name', 'updated_at'
+    ] as $column) {
+        // 入力があれば更新対象にする
+        if (isset($data[$column]) && $data[$column] !== '') {
+            $set_columns[] = $column . ' = "' . $mysqli->real_escape_string($data[$column]) . '"';
+        }
+    }
+    $query = 'UPDATE users SET ' . join(',', $set_columns);
+    $query .= ' WHERE id = "' . $mysqli->real_escape_string($data['id']) . '"';
+
+    // SQLを実行
+    $response = $mysqli->query($query);
+
+    // 結果が失敗の場合、エラーを表示
+    if ($response === false) {
+        echo 'エラーメッセージ:'.$mysqli->error."\n";
+    }
+
+    $mysqli->close();
+    return $response;
+    
+}
 function findUserAndCheckPassword(string $email, string $password) 
 {
     $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
@@ -68,7 +111,7 @@ function findUserAndCheckPassword(string $email, string $password)
 
     // パスワードチェック
     // password_verify()でパスワードがハッシュ化されたパスワードと一致するかを調べる
-    if(password_verify($password, $user['password'])) {
+    if (!password_verify($password, $user['password'])) {
         // パスワード不一致
         $mysqli->close();
         return false;
@@ -128,44 +171,3 @@ function findUser(int $user_id, int $login_user_id = null) {
     return $response;
 }
 
-function updateUser(array $data) {
-    $mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-    // 接続チェック
-    if($mysqli->connect_errno) {
-        echo 'MySQLの接続に失敗しました。:'.$mysqli->connect_error."\n";
-        exit;
-    }
-
-    $data['updated_at'] = date('Y-m-d H:i:s');
-
-    if(isset($data['password'])) {
-        // パスワードをハッシュ化
-        $data['password'] =  password_hash($data['password'], PASSWORD_DEFAULT);
-    }
-
-    // 更新のSQLを作成
-    // SET句のカラムを準備
-    $set_columns = [];
-    foreach ([
-        'name', 'nickname', 'email', 'password', 'image_name', 'updated_at'
-    ] as $column) {
-        // 入力があれば更新対象にする
-        if(isset($data[$column]) && $data[$column] !== '') {
-            $set_columns[] = $column . ' = "' . $mysqli->real_escape_string($data[$column]) . '"';
-        }
-    }
-    $query = 'UPDATE users SET ' . join(',', $set_columns);
-    $query .= ' WHERE id = "' . $mysqli->real_escape_string($data['id']) . '"';
-
-    // SQLを実行
-    $response = $mysqli->query($query);
-
-    // 結果が失敗の場合、エラーを表示
-    if ($response === false) {
-        echo 'エラーメッセージ:'.$mysqli->error."\n";
-    }
-
-    $mysqli->close();
-    return $response;
-    
-}
